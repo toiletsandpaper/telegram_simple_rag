@@ -7,7 +7,7 @@ from anyio import Path
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
 
-from tg_rag_smolagents.utils import cleanup_file, parse_document
+from tg_rag_smolagents.utils import cleanup_file, parse_document, restrict_to_user_id
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -33,6 +33,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         "I can help you process PDF files. Just send me a file, and I'll take care of the rest!"
     )
 
+@restrict_to_user_id
 async def handle_file(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle incoming files, parse them, and load as LangChain documents."""
     if not update.message:
@@ -80,16 +81,16 @@ def main() -> None:
     logger.info("Upload directory created: %s", UPLOAD_DIR)
 
     dotenv.load_dotenv(dotenv_path=dotenv.find_dotenv(raise_error_if_not_found=True))
-    bot_token = os.environ["TELEGRAM_BOT_TOKEN"]
+    bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
     if not bot_token:
         logger.critical("TELEGRAM_BOT_TOKEN environment variable is not set.")
         return
 
-    app = ApplicationBuilder().token(bot_token).build()
 
 
     logger.info("Bot is starting...")
     try:
+        app = ApplicationBuilder().token(bot_token).build()
         logger.info("Setting up command handlers...")
         app.add_handler(MessageHandler(filters.ALL, handle_file))
         app.add_handler(CommandHandler("start", start))
