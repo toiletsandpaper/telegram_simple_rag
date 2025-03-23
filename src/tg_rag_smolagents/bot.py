@@ -7,7 +7,11 @@ from anyio import Path
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
 
-from tg_rag_smolagents.utils import cleanup_file, parse_document, restrict_to_user_id
+from tg_rag_smolagents.utils import (
+    cleanup_file,
+    parse_document,
+    restrict_to_user_id,  # type: ignore
+)
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",

@@ -2,7 +2,6 @@ import logging
 import os
 from functools import wraps
 
-import dotenv
 from anyio import Path
 from langchain_core.documents import Document
 from langchain_docling.loader import DoclingLoader
@@ -22,7 +21,6 @@ async def cleanup_file(file_path: Path) -> None:
 
 
 def restrict_to_user_id(func):  # type: ignore
-    dotenv.load_dotenv(dotenv_path=dotenv.find_dotenv(raise_error_if_not_found=True))
     AUTHORIZED_USER_ID = os.getenv("ALLOWED_USER_ID")
     if not AUTHORIZED_USER_ID:
         logger.error("ALLOWED_USER_ID environment variable is not set.")
