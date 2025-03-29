@@ -10,7 +10,7 @@ from langchain_openai.chat_models import ChatOpenAI
 from telegram import Message, Update
 from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, filters
 
-from tg_rag_smolagents.utils import (
+from tg_rag.utils import (
     cleanup_file,
     configure_qdrant,
     configure_retriever,
@@ -19,17 +19,14 @@ from tg_rag_smolagents.utils import (
     update_store,
 )
 
-# Configure logging
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     level=logging.INFO,
 )
 logger = logging.getLogger(__name__)
 
-# Load environment variables
 dotenv.load_dotenv(dotenv_path=dotenv.find_dotenv(raise_error_if_not_found=True))
 
-# Global variables
 CLIENT, VECTOR_STORE = configure_qdrant()
 RETIREVER = configure_retriever(vector_store=VECTOR_STORE)
 UPLOAD_DIR = Path("uploads")
